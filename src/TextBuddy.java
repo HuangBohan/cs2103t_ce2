@@ -16,7 +16,7 @@ public class TextBuddy {
 	public static final String MESSAGE_EMPTY = "%1$s is empty\n";
 	public static final String MESSAGE_DELETED = "deleted from %1$s: \"%2$s\"\n";
 	public static final String MESSAGE_CLEARED = "all content deleted from %1$s\n";
-	public static final String MESSAGE_SORTED = "\n";
+	public static final String MESSAGE_SORTED = "texts have been sorted\n%1$s\n";
 	public static final String MESSAGE_SEARCHED = "\n";
 	public static final String MESSAGE_INVALID_FORMAT = "invalid command format :%1$s\n";
 	
@@ -82,7 +82,7 @@ public class TextBuddy {
 		case ADD_TEXT :
 			return addText(userCommand);
 		case DISPLAY_TEXT :
-			return displayText(userCommand);
+			return displayText();
 		case DELETE_TEXT :
 			return deleteText(userCommand);
 		case CLEAR_TEXT :
@@ -150,18 +150,24 @@ public class TextBuddy {
 		return message;
 	}
 	
-	public static String displayText(String userCommand) {
+	public static String displayText() {
 		if (texts.isEmpty()) {
 			return String.format(MESSAGE_EMPTY, OUTPUT_FILENAME);
 		} else {
-			String message = "";
-			for (int i=0; i < texts.size()-1; i++) {
-				message += (i+1) + ". " + texts.get(i) + "\n";
-			}
-			message += texts.size() + ". " + texts.get(texts.size()-1);
+			String message = generateContentAsString();
 			
 			return String.format(MESSAGE_DISPLAYED, message);
 		}
+	}
+	
+	public static String generateContentAsString(){
+		String message = "";
+		for (int i=0; i < texts.size()-1; i++) {
+			message += (i+1) + ". " + texts.get(i) + "\n";
+		}
+		message += texts.size() + ". " + texts.get(texts.size()-1);
+		
+		return message;
 	}
 	
 	public static String clearText(String userCommand) throws IOException {
@@ -174,7 +180,8 @@ public class TextBuddy {
 	public static String sortText() throws IOException {
 		Collections.sort(texts, String.CASE_INSENSITIVE_ORDER);
 		saveText();
-		return MESSAGE_SORTED;
+		String message = generateContentAsString();
+		return String.format(MESSAGE_SORTED, message);
 	}
 	
 	public static String searchText(String userCommand) {
