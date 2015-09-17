@@ -8,42 +8,42 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class TextBuddy {	
-	private static final String MESSAGE_WELCOME = "Welcome to TextBuddy. %1$s is ready for use\n";
-	private static final String MESSAGE_COMMAND = "command:";
-	private static final String MESSAGE_ADDED = "added to %1$s: \"%2$s\"\n";
-	private static final String MESSAGE_DISPLAYED = "%1$s\n";
-	private static final String MESSAGE_EMPTY = "%1$s is empty\n";
-	private static final String MESSAGE_DELETED = "deleted from %1$s: \"%2$s\"\n";
-	private static final String MESSAGE_CLEARED = "all content deleted from %1$s\n";
-	private static final String MESSAGE_SORTED = "\n";
-	private static final String MESSAGE_SEARCHED = "\n";
-	private static final String MESSAGE_INVALID_FORMAT = "invalid command format :%1$s\n";
+	public static final String MESSAGE_WELCOME = "Welcome to TextBuddy. %1$s is ready for use\n";
+	public static final String MESSAGE_COMMAND = "command:";
+	public static final String MESSAGE_ADDED = "added to %1$s: \"%2$s\"\n";
+	public static final String MESSAGE_DISPLAYED = "%1$s\n";
+	public static final String MESSAGE_EMPTY = "%1$s is empty\n";
+	public static final String MESSAGE_DELETED = "deleted from %1$s: \"%2$s\"\n";
+	public static final String MESSAGE_CLEARED = "all content deleted from %1$s\n";
+	public static final String MESSAGE_SORTED = "\n";
+	public static final String MESSAGE_SEARCHED = "\n";
+	public static final String MESSAGE_INVALID_FORMAT = "invalid command format :%1$s\n";
 	
 	enum CommandType {
 		ADD_TEXT, DELETE_TEXT, CLEAR_TEXT, DISPLAY_TEXT, SORT_TEXT, SEARCH_TEXT, INVALID, EXIT
 	};
 	
 	
-	private static File OUTPUT_FILE;
-	private static String OUTPUT_FILENAME;
+	public static File OUTPUT_FILE;
+	public static String OUTPUT_FILENAME;
 	
-	private static ArrayList<String> texts = new ArrayList<String>();
+	public static ArrayList<String> texts = new ArrayList<String>();
 	
-	private static BufferedReader bufferReader;
-	private static BufferedWriter bufferWriter;
+	public static BufferedReader bufferReader;
+	public static BufferedWriter bufferWriter;
 	
-	private static Scanner scanner = new Scanner(System.in);
+	public static Scanner scanner = new Scanner(System.in);
 	
 	public static void main(String[] args) throws IOException {
 		initializeTextBuddy(args[0]);
 		executeTextBuddy();
 	}
 	
-	private static void showToUser(String text) {
+	public static void showToUser(String text) {
 		System.out.print(text);
 	}
 
-	private static void initializeTextBuddy(String targetFile) throws IOException {
+	public static void initializeTextBuddy(String targetFile) throws IOException {
 		setOutputFile(targetFile);
 		OUTPUT_FILE = new File(OUTPUT_FILENAME);
 			
@@ -60,11 +60,11 @@ public class TextBuddy {
 		showToUser(String.format(MESSAGE_WELCOME, OUTPUT_FILENAME));
 	}
 
-	private static void setOutputFile(String filename) {
+	public static void setOutputFile(String filename) {
 		OUTPUT_FILENAME = filename;
 	}
 
-	private static void executeTextBuddy() throws IOException {
+	public static void executeTextBuddy() throws IOException {
 		while (true) {
 			showToUser(MESSAGE_COMMAND);
 			String command = scanner.nextLine();
@@ -74,7 +74,7 @@ public class TextBuddy {
 		}
 	}
 	
-	private static String executeCommand(String userCommand) throws IOException {
+	public static String executeCommand(String userCommand) throws IOException {
 		CommandType commandType = determineCommandType(userCommand);
 
 		switch (commandType) {
@@ -100,7 +100,7 @@ public class TextBuddy {
 		}
 	}
 
-	private static CommandType determineCommandType(String userCommand) throws IOException {
+	public static CommandType determineCommandType(String userCommand) throws IOException {
 		String commandTypeString = getFirstWord(userCommand);
 		
 		if (commandTypeString.equalsIgnoreCase("add")) {
@@ -122,17 +122,17 @@ public class TextBuddy {
 		}
 	}
 
-	private static String getFirstWord(String userCommand) {
+	public static String getFirstWord(String userCommand) {
 		String commandTypeString = userCommand.trim().split("\\s+")[0];
 		return commandTypeString;
 	}
 	
-	private static String getParameter(String userCommand) {
+	public static String getParameter(String userCommand) {
 		String parameter = userCommand.trim().split("\\s+", 2)[1];
 		return parameter;
 	}
 	
-	private static String addText(String userCommand) throws IOException {
+	public static String addText(String userCommand) throws IOException {
 		String inputLine = getParameter(userCommand);
 		texts.add(inputLine);
 		String message = String.format(MESSAGE_ADDED, OUTPUT_FILENAME, inputLine);
@@ -140,7 +140,7 @@ public class TextBuddy {
 		return message;
 	}
 	
-	private static String deleteText(String userCommand) throws IOException {
+	public static String deleteText(String userCommand) throws IOException {
 		Integer index = Integer.parseInt(getParameter(userCommand));			
 		String text = texts.get(index-1);
 		texts.remove(index-1);
@@ -149,7 +149,7 @@ public class TextBuddy {
 		return message;
 	}
 	
-	private static String displayText(String userCommand) {
+	public static String displayText(String userCommand) {
 		if (texts.isEmpty()) {
 			return String.format(MESSAGE_EMPTY, OUTPUT_FILENAME);
 		} else {
@@ -163,28 +163,28 @@ public class TextBuddy {
 		}
 	}
 	
-	private static String clearText(String userCommand) throws IOException {
+	public static String clearText(String userCommand) throws IOException {
 		texts.clear();
 		String message = String.format(MESSAGE_CLEARED, OUTPUT_FILENAME);
 		saveText();
 		return message;
 	}
 	
-	private static String sortText(String userCommand) {
+	public static String sortText(String userCommand) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
-	private static String searchText(String userCommand) {
+	public static String searchText(String userCommand) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
-	private static String promptError(String userCommand) {
+	public static String promptError(String userCommand) {
 		return String.format(MESSAGE_INVALID_FORMAT, userCommand);
 	}
 
-	private static void saveText() throws IOException {
+	public static void saveText() throws IOException {
 		FileWriter fileWriter = new FileWriter(OUTPUT_FILE.getAbsoluteFile());
 		bufferWriter = new BufferedWriter(fileWriter);
 		for (int i=0; i < texts.size(); i++) {
