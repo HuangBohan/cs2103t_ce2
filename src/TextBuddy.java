@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class TextBuddy {	
@@ -87,7 +88,7 @@ public class TextBuddy {
 		case CLEAR_TEXT :
 			return clearText(userCommand);
 		case SORT_TEXT :
-			return sortText(userCommand);
+			return sortText();
 		case SEARCH_TEXT :
 			return searchText(userCommand);
 		case INVALID :
@@ -170,9 +171,10 @@ public class TextBuddy {
 		return message;
 	}
 	
-	public static String sortText(String userCommand) {
-		// TODO Auto-generated method stub
-		return null;
+	public static String sortText() throws IOException {
+		Collections.sort(texts, String.CASE_INSENSITIVE_ORDER);
+		saveText();
+		return MESSAGE_SORTED;
 	}
 	
 	public static String searchText(String userCommand) {
