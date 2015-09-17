@@ -17,7 +17,8 @@ public class TextBuddy {
 	public static final String MESSAGE_DELETED = "deleted from %1$s: \"%2$s\"\n";
 	public static final String MESSAGE_CLEARED = "all content deleted from %1$s\n";
 	public static final String MESSAGE_SORTED = "texts have been sorted\n%1$s\n";
-	public static final String MESSAGE_SEARCHED = "\n";
+	public static final String MESSAGE_SEARCHED = "searching result of \"%1$s\":\n%2$s\n";
+	public static final String MESSAGE_NOT_FOUND = "no \"%1$s\" found in %2$s\n";
 	public static final String MESSAGE_INVALID_FORMAT = "invalid command format :%1$s\n";
 	
 	enum CommandType {
@@ -154,18 +155,18 @@ public class TextBuddy {
 		if (texts.isEmpty()) {
 			return String.format(MESSAGE_EMPTY, OUTPUT_FILENAME);
 		} else {
-			String message = generateContentAsString();
+			String message = generateStringFromArraylist(texts);
 			
 			return String.format(MESSAGE_DISPLAYED, message);
 		}
 	}
 	
-	public static String generateContentAsString(){
+	public static String generateStringFromArraylist(ArrayList<String> list){
 		String message = "";
-		for (int i=0; i < texts.size()-1; i++) {
-			message += (i+1) + ". " + texts.get(i) + "\n";
+		for (int i=0; i < list.size()-1; i++) {
+			message += (i+1) + ". " + list.get(i) + "\n";
 		}
-		message += texts.size() + ". " + texts.get(texts.size()-1);
+		message += list.size() + ". " + list.get(list.size()-1);
 		
 		return message;
 	}
@@ -180,13 +181,27 @@ public class TextBuddy {
 	public static String sortText() throws IOException {
 		Collections.sort(texts, String.CASE_INSENSITIVE_ORDER);
 		saveText();
-		String message = generateContentAsString();
+		String message = generateStringFromArraylist(texts);
 		return String.format(MESSAGE_SORTED, message);
 	}
 	
 	public static String searchText(String userCommand) {
-		// TODO Auto-generated method stub
-		return null;
+		String keyword = getParameter(userCommand);
+
+		ArrayList<String> searchResults = new ArrayList<String>();
+		for (int i=0; i < texts.size(); i++) {
+			String currentLine = texts.get(i);
+			if ( currentLine.contains(keyword) ) {
+				searchResults.add(currentLine);
+			}
+		}
+		
+		if (searchResults.isEmpty()){
+			return String.format(MESSAGE_NOT_FOUND, keyword, OUTPUT_FILENAME);
+		} else {
+			String message = generateStringFromArraylist(searchResults);
+			return String.format(MESSAGE_SEARCHED, keyword, message);
+		}
 	}
 	
 	public static String promptError(String userCommand) {
